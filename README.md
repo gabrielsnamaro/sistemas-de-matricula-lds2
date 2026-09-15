@@ -2,6 +2,8 @@
 
 Este repositório contém os artefatos gerados para a Sprint 01 do projeto do Sistema de Matrículas da universidade.
 
+**Integrantes:** Fabrício Rocha Lopes, Gabriel Silva Neiva Amaro, Otávio Chaves Silva, Samuel Rocha Ferraz Gonçalves Rebula
+
 ## Diagrama de Caso de Uso
 
 Abaixo está a representação visual dos atores e suas interações com o sistema:
