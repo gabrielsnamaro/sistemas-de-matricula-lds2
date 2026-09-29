@@ -66,7 +66,7 @@ Nesta sprint foram desenvolvidos o **Diagrama de Classes UML** detalhado do sist
 
 Abaixo está a representação visual estrutural das classes, atributos, métodos e associações:
 
-![Diagrama de Classes](img/diagrama-de-classes.png)
+![Diagrama de Classes](img/diagrama-de-classes.jpg)
 
 #### Representação em Mermaid
 
@@ -321,7 +321,7 @@ sistemas-de-matricula-lds2/
 ├── dados_sistema.txt
 ├── img/
 │   ├── casos-de-uso.png
-│   └── diagrama-de-classes.png
+│   └── diagrama-de-classes.jpg
 └── src/
     ├── main/
     │   └── java/
