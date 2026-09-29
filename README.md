@@ -278,6 +278,7 @@ O projeto foi gerado com **Maven** nativo configurado para **Java 21**, seguindo
 sistemas-de-matricula-lds2/
 ├── pom.xml
 ├── README.md
+├── dados_sistema.txt
 ├── img/
 │   ├── casos-de-uso.png
 │   └── diagrama-de-classes.png
@@ -303,17 +304,46 @@ sistemas-de-matricula-lds2/
     │                       │   ├── Professor.java
     │                       │   ├── Secretario.java
     │                       │   └── Usuario.java
-    │                       └── service/
-    │                           ├── SistemaCobranca.java
-    │                           └── SistemaMatricula.java
+    │                       ├── persistencia/
+    │                       │   ├── PersistenciaDados.java
+    │                       │   ├── PersistenciaArquivoTxt.java
+    │                       │   └── PersistenciaException.java
+    │                       ├── service/
+    │                       │   ├── SistemaCobranca.java
+    │                       │   └── SistemaMatricula.java
+    │                       └── view/
+    │                           └── MenuConsole.java
     └── test/
         └── java/
             └── br/
                 └── edu/
                     └── pucminas/
                         └── matricula/
-                            └── AppTest.java
+                            ├── AppTest.java
+                            └── persistencia/
+                                └── PersistenciaArquivoTxtTest.java
 ```
+
+---
+
+## Módulo de Persistência em Arquivo TXT
+
+O sistema implementa um módulo desacoplado de persistência sob o pacote `br.edu.pucminas.matricula.persistencia`:
+
+- **`PersistenciaDados`**: Interface que define o contrato com métodos para `salvar()` e `carregar()`.
+- **`PersistenciaArquivoTxt`**: Implementação concreta que persiste todas as entidades do sistema em um único arquivo de texto (`dados_sistema.txt`).
+- **`PersistenciaException`**: Exceção específica para tratamento de inconsistências e falhas de persistência.
+
+### Formato do Arquivo de Persistência (`dados_sistema.txt`)
+O arquivo organiza os dados em seções delimitadas por tags e utiliza `;` como separador de campos:
+- `[CURSOS]`: código, nome, total de créditos e códigos das disciplinas associadas.
+- `[DISCIPLINAS]`: código, nome, créditos, status e ID do professor responsável.
+- `[SECRETARIOS]`: ID, nome, email, senha e cargo.
+- `[PROFESSORES]`: ID, nome, email, senha, SIAPE e disciplinas lecionadas.
+- `[ALUNOS]`: ID, nome, email, senha, matrícula e código do curso.
+- `[CURRICULOS]`: semestre letivo, período aberto/fechado e ofertas de disciplinas.
+- `[MATRICULAS]`: ID, ID do aluno, código da disciplina, tipo (obrigatória/optativa), status e timestamp.
+- `[COBRANCAS]`: ID, ID do aluno, semestre, valor calculado, data de emissão, status de quitação e IDs das matrículas faturadas.
 
 ---
 
@@ -332,4 +362,4 @@ mvn test
 #### 3. Executar o Protótipo de Demonstração
 ```bash
 mvn exec:java
-```
+```

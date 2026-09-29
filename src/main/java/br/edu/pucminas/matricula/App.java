@@ -2,32 +2,60 @@ package br.edu.pucminas.matricula;
 
 import br.edu.pucminas.matricula.enums.TipoMatricula;
 import br.edu.pucminas.matricula.model.*;
+import br.edu.pucminas.matricula.persistencia.PersistenciaArquivoTxt;
+import br.edu.pucminas.matricula.persistencia.PersistenciaDados;
 import br.edu.pucminas.matricula.service.SistemaCobranca;
 import br.edu.pucminas.matricula.service.SistemaMatricula;
 import br.edu.pucminas.matricula.view.MenuConsole;
 
+import java.io.IOException;
+
 /**
  * Ponto de entrada do Sistema de Matrículas Universitário.
- * Inicializa a base de dados de demonstração e dispara o menu interativo via console.
+ * Inicializa o módulo de persistência de dados em arquivo TXT e dispara o menu interativo via console.
  */
 public class App {
     public static void main(String[] args) {
-        // 1. Inicializa o serviço de cobrança e o controlador de matrículas
+        // 1. Inicializa o serviço de cobrança, controlador de matrículas e módulo de persistência
         SistemaCobranca sistemaCobranca = new SistemaCobranca();
         SistemaMatricula sistemaMatricula = new SistemaMatricula(sistemaCobranca);
+        PersistenciaDados persistencia = new PersistenciaArquivoTxt();
 
-        // 2. Cria dados de demonstração (seed)
-        popularDadosIniciais(sistemaMatricula);
+        // 2. Se o arquivo TXT de persistência existir, carrega os dados; caso contrário, inicializa dados demo e persiste
+        if (persistencia.existeArquivoPersistencia()) {
+            try {
+                persistencia.carregar(sistemaMatricula);
+                System.out.println("[PERSISTÊNCIA] Dados carregados com sucesso do arquivo " + persistencia.getCaminhoPadrao());
+            } catch (IOException e) {
+                System.err.println("[PERSISTÊNCIA] Erro ao carregar dados do arquivo: " + e.getMessage());
+                System.out.println("[PERSISTÊNCIA] Inicializando dados de demonstração em memória...");
+                popularDadosIniciais(sistemaMatricula);
+                try {
+                    persistencia.salvar(sistemaMatricula);
+                } catch (IOException ex) {
+                    System.err.println("[PERSISTÊNCIA] Falha ao persistir dados iniciais: " + ex.getMessage());
+                }
+            }
+        } else {
+            System.out.println("[PERSISTÊNCIA] Arquivo TXT não encontrado. Inicializando base de demonstração e persistindo...");
+            popularDadosIniciais(sistemaMatricula);
+            try {
+                persistencia.salvar(sistemaMatricula);
+                System.out.println("[PERSISTÊNCIA] Dados de demonstração salvos com sucesso em " + persistencia.getCaminhoPadrao());
+            } catch (IOException e) {
+                System.err.println("[PERSISTÊNCIA] Falha ao persistir dados iniciais: " + e.getMessage());
+            }
+        }
 
         // 3. Inicia o menu interativo no terminal
-        MenuConsole menu = new MenuConsole(sistemaMatricula);
+        MenuConsole menu = new MenuConsole(sistemaMatricula, persistencia);
         menu.iniciar();
     }
 
     /**
      * Popula o sistema com dados iniciais para viabilizar testes imediatos.
      */
-    private static void popularDadosIniciais(SistemaMatricula sistema) {
+    public static void popularDadosIniciais(SistemaMatricula sistema) {
         // Cursos
         Curso engenhariaSoftware = new Curso("BES", "Engenharia de Software", 240);
         Curso cienciaComputacao = new Curso("BCC", "Ciência da Computação", 240);

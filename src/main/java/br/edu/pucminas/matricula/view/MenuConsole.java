@@ -2,8 +2,11 @@ package br.edu.pucminas.matricula.view;
 
 import br.edu.pucminas.matricula.enums.TipoMatricula;
 import br.edu.pucminas.matricula.model.*;
+import br.edu.pucminas.matricula.persistencia.PersistenciaArquivoTxt;
+import br.edu.pucminas.matricula.persistencia.PersistenciaDados;
 import br.edu.pucminas.matricula.service.SistemaMatricula;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,11 +16,17 @@ import java.util.Scanner;
  */
 public class MenuConsole {
     private final SistemaMatricula sistemaMatricula;
+    private final PersistenciaDados persistencia;
     private final Scanner scanner;
     private Usuario usuarioLogado;
 
     public MenuConsole(SistemaMatricula sistemaMatricula) {
+        this(sistemaMatricula, new PersistenciaArquivoTxt());
+    }
+
+    public MenuConsole(SistemaMatricula sistemaMatricula, PersistenciaDados persistencia) {
         this.sistemaMatricula = sistemaMatricula;
+        this.persistencia = persistencia != null ? persistencia : new PersistenciaArquivoTxt();
         this.scanner = new Scanner(System.in);
     }
 
@@ -37,6 +46,7 @@ public class MenuConsole {
                 menuSecretaria(secretario);
             }
         }
+        salvarDadosAutomaticamente();
         System.out.println("\n[SISTEMA] Programa encerrado. Obrigado por utilizar o Sistema de Matrículas PUC Minas!");
     }
 
@@ -55,6 +65,8 @@ public class MenuConsole {
         System.out.println("--------------------------------------------------------");
         System.out.println("1. Fazer Login");
         System.out.println("2. Listar Usuários Cadastrados");
+        System.out.println("3. Salvar Dados no Arquivo TXT");
+        System.out.println("4. Recarregar Dados do Arquivo TXT");
         System.out.println("0. Sair");
         System.out.print("Escolha uma opção: ");
 
@@ -62,6 +74,8 @@ public class MenuConsole {
         switch (opcao) {
             case "1" -> realizarLogin();
             case "2" -> listarUsuarios();
+            case "3" -> salvarDadosManualmente();
+            case "4" -> recarregarDadosManualmente();
             case "0" -> {
                 return false;
             }
@@ -351,6 +365,8 @@ public class MenuConsole {
         System.out.println("7. Cadastrar Novo Aluno");
         System.out.println("8. Cadastrar Novo Professor");
         System.out.println("9. Listar Visão Geral do Sistema");
+        System.out.println("10. Salvar Dados no Arquivo TXT");
+        System.out.println("11. Recarregar Dados do Arquivo TXT");
         System.out.println("0. Fazer Logout");
         System.out.print("Escolha uma opção: ");
 
@@ -365,6 +381,8 @@ public class MenuConsole {
             case "7" -> cadastrarAluno();
             case "8" -> cadastrarProfessor();
             case "9" -> listarVisaoGeral();
+            case "10" -> salvarDadosManualmente();
+            case "11" -> recarregarDadosManualmente();
             case "0" -> {
                 System.out.println("[✓] Logout efetuado.");
                 this.usuarioLogado = null;
@@ -536,5 +554,32 @@ public class MenuConsole {
         System.out.println(" • Alunos: " + sistemaMatricula.getAlunos().size());
         System.out.println(" • Professores: " + sistemaMatricula.getProfessores().size());
         System.out.println(" • Secretaria: " + sistemaMatricula.getSecretarios().size());
+    }
+
+    private void salvarDadosManualmente() {
+        try {
+            persistencia.salvar(sistemaMatricula);
+            System.out.println("\n[✓] Dados salvos com sucesso no arquivo TXT (" + persistencia.getCaminhoPadrao() + ")!");
+        } catch (IOException e) {
+            System.out.println("\n[X] Falha ao salvar arquivo TXT: " + e.getMessage());
+        }
+    }
+
+    private void recarregarDadosManualmente() {
+        try {
+            persistencia.carregar(sistemaMatricula);
+            System.out.println("\n[✓] Dados recarregados com sucesso do arquivo TXT (" + persistencia.getCaminhoPadrao() + ")!");
+        } catch (IOException e) {
+            System.out.println("\n[X] Falha ao recarregar dados do arquivo TXT: " + e.getMessage());
+        }
+    }
+
+    private void salvarDadosAutomaticamente() {
+        try {
+            persistencia.salvar(sistemaMatricula);
+            System.out.println("[PERSISTÊNCIA] Dados salvos automaticamente no arquivo " + persistencia.getCaminhoPadrao());
+        } catch (IOException e) {
+            System.err.println("[PERSISTÊNCIA] Falha ao salvar dados automaticamente: " + e.getMessage());
+        }
     }
 }

@@ -70,4 +70,23 @@ public class SistemaCobranca {
     public List<Cobranca> getCobrancasEmitidas() {
         return Collections.unmodifiableList(cobrancasEmitidas);
     }
+
+    /**
+     * Registra diretamente uma cobrança já existente no histórico do sistema.
+     * Utilizado pela camada de persistência.
+     *
+     * @param cobranca Cobrança a ser adicionada
+     */
+    public void adicionarCobranca(Cobranca cobranca) {
+        if (cobranca != null && !this.cobrancasEmitidas.contains(cobranca)) {
+            this.cobrancasEmitidas.add(cobranca);
+        }
+    }
+
+    /**
+     * Limpa todas as cobranças registradas no sistema.
+     */
+    public void limparCobrancas() {
+        this.cobrancasEmitidas.clear();
+    }
 }

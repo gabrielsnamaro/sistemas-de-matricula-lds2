@@ -63,6 +63,18 @@ public class Disciplina {
     }
 
     /**
+     * Adiciona diretamente uma inscrição já existente na disciplina.
+     * Utilizado para restaurar o estado da aplicação via módulo de persistência.
+     *
+     * @param matricula Inscrição existente a ser associada à disciplina
+     */
+    public void adicionarInscricaoExistente(Matricula matricula) {
+        if (matricula != null && !this.inscricoes.contains(matricula)) {
+            this.inscricoes.add(matricula);
+        }
+    }
+
+    /**
      * Stub para remover uma matrícula da disciplina (por cancelamento do aluno).
      *
      * @param matricula Matrícula a ser removida

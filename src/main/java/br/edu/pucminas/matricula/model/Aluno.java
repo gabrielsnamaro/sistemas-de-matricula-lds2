@@ -66,6 +66,18 @@ public class Aluno extends Usuario {
     }
 
     /**
+     * Adiciona diretamente uma matrícula já existente ao histórico do aluno.
+     * Utilizado para restaurar o estado da aplicação via módulo de persistência.
+     *
+     * @param matricula Matrícula existente a ser vinculada ao aluno
+     */
+    public void adicionarMatriculaExistente(Matricula matricula) {
+        if (matricula != null && !this.matriculas.contains(matricula)) {
+            this.matriculas.add(matricula);
+        }
+    }
+
+    /**
      * Stub para cancelar uma matrícula ativa em disciplina.
      *
      * @param disciplina Disciplina a ter matrícula cancelada

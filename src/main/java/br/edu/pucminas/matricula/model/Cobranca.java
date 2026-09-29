@@ -42,6 +42,22 @@ public class Cobranca {
     }
 
     /**
+     * Construtor completo para restaurar cobranças existentes a partir do módulo de persistência de dados.
+     */
+    public Cobranca(String id, Aluno aluno, String semestre, double valorTotal, LocalDateTime dataEmissao, boolean paga, List<Matricula> matriculasCobradas) {
+        this.id = id;
+        this.aluno = aluno;
+        this.semestre = semestre;
+        this.valorTotal = valorTotal;
+        this.dataEmissao = dataEmissao;
+        this.paga = paga;
+        this.matriculasCobradas = new ArrayList<>();
+        if (matriculasCobradas != null) {
+            this.matriculasCobradas.addAll(matriculasCobradas);
+        }
+    }
+
+    /**
      * Calcula o valor financeiro total da cobrança com base nos créditos das disciplinas matriculadas.
      *
      * @param matriculas Lista de matrículas ativas a serem cobradas

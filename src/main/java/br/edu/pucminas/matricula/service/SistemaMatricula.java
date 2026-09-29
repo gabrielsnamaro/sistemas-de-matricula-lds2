@@ -216,4 +216,15 @@ public class SistemaMatricula {
     public SistemaCobranca getSistemaCobranca() {
         return sistemaCobranca;
     }
+
+    /**
+     * Limpa todas as entidades cadastradas no sistema (usuários, cursos, currículos e cobranças).
+     * Utilizado antes de recarregar dados a partir do módulo de persistência.
+     */
+    public void limparDados() {
+        this.usuarios.clear();
+        this.cursos.clear();
+        this.curriculos.clear();
+        this.sistemaCobranca.limparCobrancas();
+    }
 }
