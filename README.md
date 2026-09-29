@@ -213,6 +213,40 @@ classDiagram
         +getCobrancasEmitidas() List~Cobranca~
     }
 
+    class PersistenciaDados {
+        <<interface>>
+        +salvar(SistemaMatricula sistema) void
+        +salvar(SistemaMatricula sistema, String caminho) void
+        +carregar(SistemaMatricula sistema) void
+        +carregar(SistemaMatricula sistema, String caminho) void
+        +carregar(String caminho) SistemaMatricula
+        +carregar() SistemaMatricula
+        +existeArquivoPersistencia() boolean
+        +getCaminhoPadrao() String
+    }
+
+    class PersistenciaArquivoTxt {
+        -String caminhoPadrao
+        +PersistenciaArquivoTxt()
+        +PersistenciaArquivoTxt(String caminhoPadrao)
+        +salvar(SistemaMatricula sistema, String caminho) void
+        +carregar(SistemaMatricula sistema, String caminho) void
+    }
+
+    class PersistenciaException {
+        +PersistenciaException(String mensagem)
+    }
+
+    class MenuConsole {
+        -SistemaMatricula sistemaMatricula
+        -PersistenciaDados persistencia
+        +iniciar() void
+        -menuLogin() boolean
+        -salvarDadosManualmente() void
+        -recarregarDadosManualmente() void
+        -salvarDadosAutomaticamente() void
+    }
+
     class TipoMatricula {
         <<enumeration>>
         OBRIGATORIA
@@ -251,6 +285,12 @@ classDiagram
     SistemaMatricula ..> SistemaCobranca : notifica
     SistemaCobranca "1" o-- "0..*" Cobranca : emite
     Cobranca --> Aluno : faturada para
+
+    PersistenciaDados <|.. PersistenciaArquivoTxt : implementa
+    PersistenciaDados ..> SistemaMatricula : persiste / restaura
+    PersistenciaDados ..> PersistenciaException : lanca
+    MenuConsole --> SistemaMatricula : interage
+    MenuConsole --> PersistenciaDados : persiste
 ```
 
 ---
